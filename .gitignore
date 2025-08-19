@@ -1,0 +1,32 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Logs
+*.log
+
+# Secrets
+appsettings.Development.json
+appsettings.*.json
+
+# Others
+*.DS_Store
+Thumbs.db
