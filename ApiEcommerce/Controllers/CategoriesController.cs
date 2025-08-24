@@ -32,13 +32,13 @@ namespace ApiEcommerce.Controllers
                 categoriesDto.Add(_mapper.Map<CategoryDto>(category));
             }
             return Ok(categoriesDto);
-        } 
+        }
 
-         [HttpGet("{id:int}",Name = "GetCategory")]
+        [HttpGet("{id:int}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+       
 
         public IActionResult GetCategory(int id)
         {
@@ -48,9 +48,39 @@ namespace ApiEcommerce.Controllers
                 return NotFound($"La categoría con el id {id} no existe");
             }
             var categoryDto = _mapper.Map<CategoryDto>(category);
-           
+
             return Ok(categoryDto);
-        } 
+        }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+
+        public IActionResult CreateCategory([FromBody] CreateCategoryDTO createCategoryDTO)
+        {
+            if (createCategoryDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_categoryRepository.CategoryExists(createCategoryDTO.Name))
+            {
+                ModelState.AddModelError("CustomError", "La categoría ya existe");
+                return BadRequest(ModelState);
+
+            }
+            var category = _mapper.Map<Category>(createCategoryDTO);
+            if (!_categoryRepository.CreateCategory(category))
+            {
+                ModelState.AddModelError("CustomError", $"Algo salió mal al guardar el registro {category.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
+        }   
     }
 
 }
