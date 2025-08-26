@@ -1,3 +1,4 @@
+using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using AutoMapper;
@@ -11,10 +12,12 @@ namespace ApiEcommerce.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        public ProductsController(IProductRepository productRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
@@ -28,8 +31,8 @@ namespace ApiEcommerce.Controllers
             var productsDto = _mapper.Map<List<ProductDTO>>(products);
             return Ok(productsDto);
         }
-        
-         [HttpGet("{productId:int}", Name = "GetProduct")]
+
+        [HttpGet("{productId:int}", Name = "GetProduct")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -45,6 +48,43 @@ namespace ApiEcommerce.Controllers
             var productDto = _mapper.Map<ProductDTO>(product);
 
             return Ok(productDto);
+        }
+        
+         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+
+        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDTO)
+        {
+            if (createProductDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_productRepository.ProductExists(createProductDTO.Name))
+            {
+                ModelState.AddModelError("CustomError", "El producto ya existe");
+                return BadRequest(ModelState);
+
+            }
+             if (!_categoryRepository.CategoryExists(createProductDTO.CategoryId))
+            {
+                ModelState.AddModelError("CustomError", $"La categoría con el id {createProductDTO.CategoryId} no existe");
+                return BadRequest(ModelState);
+
+            }
+            var product = _mapper.Map<Product>(createProductDTO);
+            if (!_productRepository.CreateProduct(product))
+            {
+                ModelState.AddModelError("CustomError", $"Algo salió mal al guardar el registro {product.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, product);
         }
 
     }
