@@ -12,7 +12,7 @@ namespace ApiEcommerce.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
         {
@@ -25,7 +25,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
 
-        public IActionResult GetCategories()
+        public IActionResult GetProducts()
         {
             var products = _productRepository.GetProducts();
             var productsDto = _mapper.Map<List<ProductDTO>>(products);
@@ -49,8 +49,8 @@ namespace ApiEcommerce.Controllers
 
             return Ok(productDto);
         }
-        
-         [HttpPost]
+
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -71,7 +71,7 @@ namespace ApiEcommerce.Controllers
                 return BadRequest(ModelState);
 
             }
-             if (!_categoryRepository.CategoryExists(createProductDTO.CategoryId))
+            if (!_categoryRepository.CategoryExists(createProductDTO.CategoryId))
             {
                 ModelState.AddModelError("CustomError", $"La categoría con el id {createProductDTO.CategoryId} no existe");
                 return BadRequest(ModelState);
@@ -86,6 +86,33 @@ namespace ApiEcommerce.Controllers
             var createdProduct = _productRepository.GetProduct(product.ProductId);
             var productDto = _mapper.Map<ProductDTO>(createdProduct);
             return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
+        }
+
+        [HttpGet("searchByCategory/{categoryId:int}", Name = "GetProductForCategory")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
+
+
+        public IActionResult GetProductForCategory(int categoryId)
+        {
+            var category = _categoryRepository.GetCategory(categoryId);
+            if (category == null)
+            {
+                return NotFound($"La categoría con el id {categoryId} no existe");
+            }
+
+            var products = _productRepository.GetProductsForCategory(categoryId);
+
+            if (products.Count == 0)
+            {
+                return NotFound($"Los productos con el id de categoría {categoryId} no existen");
+            }
+
+            var productsDto = _mapper.Map<List<ProductDTO>>(products);
+
+            return Ok(productsDto);
         }
 
     }
