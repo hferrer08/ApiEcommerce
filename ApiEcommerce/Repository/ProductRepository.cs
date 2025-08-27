@@ -1,6 +1,7 @@
 using System;
 using System.Data.Common;
 using ApiEcommerce.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiEcommerce.Repository;
 
@@ -57,12 +58,12 @@ public class ProductRepository : IProductRepository
         {
             return null;
         }
-        return _db.Products.FirstOrDefault(p => p.ProductId == id);
+        return _db.Products.Include(p=>p.Category).FirstOrDefault(p => p.ProductId == id);
     }
 
     public ICollection<Product> GetProducts()
     {
-        return _db.Products.OrderBy(p => p.Name).ToList();
+        return _db.Products.Include(p=>p.Category).OrderBy(p => p.Name).ToList();
     }
 
     public ICollection<Product> GetProductsForCategory(int categoryId)
@@ -71,7 +72,7 @@ public class ProductRepository : IProductRepository
         {
             return new List<Product>();
         }
-        return _db.Products.Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name).ToList();
+        return _db.Products.Include(p=>p.Category).Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name).ToList();
     }
 
     public bool ProductExists(int id)
