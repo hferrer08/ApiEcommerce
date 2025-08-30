@@ -115,7 +115,7 @@ namespace ApiEcommerce.Controllers
             return Ok(productsDto);
         }
 
-          [HttpGet("searchByNameDescription/{searchTerm}", Name = "SearchProducts")]
+        [HttpGet("searchByNameDescription/{searchTerm}", Name = "SearchProducts")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -124,7 +124,7 @@ namespace ApiEcommerce.Controllers
 
         public IActionResult SearchProducts(string searchTerm)
         {
-            
+
             var products = _productRepository.SearchProducts(searchTerm);
 
             if (products.Count == 0)
@@ -135,6 +135,35 @@ namespace ApiEcommerce.Controllers
             var productsDto = _mapper.Map<List<ProductDTO>>(products);
 
             return Ok(productsDto);
+        }
+
+        [HttpPatch("buyProduct/{name}/{quantity:int}", Name = "BuyProduct")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
+
+
+        public IActionResult BuyProduct(string name, int quantity)
+        {
+            if (string.IsNullOrEmpty(name) || quantity <= 0)
+            {
+                return BadRequest("El nombre del producto o la cantidad no son válidos");
+            }
+
+            var foundProduct = _productRepository.ProductExists(name);
+            if (!foundProduct)
+            {
+                return NotFound($"El producto con el nombre {name} no existe");
+            }
+
+            if (!_productRepository.BuyProduct(name, quantity))
+            {
+                ModelState.AddModelError("CustomError", $"No se pudo comprar el producto {name} o la cantidad solicitada es mayor al stock disponible");
+                return BadRequest(ModelState);
+            }
+            var units = quantity == 1 ? "unidad" : "unidades";
+            return Ok($"Se compró {quantity} {units} del producto '{name}'");
         }
 
     }
