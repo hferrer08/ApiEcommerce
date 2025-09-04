@@ -1,6 +1,8 @@
+using ApiEcommerce.Constants;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,8 @@ namespace ApiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    // [EnableCors("AllowSpecificOrigin")]
+    // [EnableCors(PolicyNames.AllowSpecificOrigin)]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
@@ -22,7 +26,8 @@ namespace ApiEcommerce.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
-
+        // [EnableCors("AllowSpecificOrigin")]
+        // [EnableCors(PolicyNames.AllowSpecificOrigin)]
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
@@ -120,9 +125,9 @@ namespace ApiEcommerce.Controllers
             }
 
             return NoContent();
-        }   
-        
-         [HttpDelete("{id:int}", Name = "deleteCategory")]
+        }
+
+        [HttpDelete("{id:int}", Name = "deleteCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -135,13 +140,13 @@ namespace ApiEcommerce.Controllers
 
             if (!_categoryRepository.CategoryExists(id))
             {
-                 return NotFound($"La categoría con el id {id} no existe");
+                return NotFound($"La categoría con el id {id} no existe");
             }
             var category = _categoryRepository.GetCategory(id);
 
-             if (category == null)
+            if (category == null)
             {
-                 return NotFound($"La categoría con el id {id} no existe");
+                return NotFound($"La categoría con el id {id} no existe");
             }
 
             if (!_categoryRepository.DeleteCategory(category))
@@ -151,7 +156,7 @@ namespace ApiEcommerce.Controllers
             }
 
             return NoContent();
-        }   
+        }
     }
 
 }
