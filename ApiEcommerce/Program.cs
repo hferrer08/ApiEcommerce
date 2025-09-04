@@ -1,5 +1,6 @@
 using ApiEcommerce.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,24 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policy =>
+        {
+            // Si quieres permitir cualquier origen:
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+
+            // ⚠️ O si quieres permitir solo ciertos dominios, usa esto en vez de AllowAnyOrigin:
+            // policy.WithOrigins("http://localhost:3000")
+            //       .AllowAnyMethod()
+            //       .AllowAnyHeader();
+        });
+});
+
 
 var app = builder.Build();
 
