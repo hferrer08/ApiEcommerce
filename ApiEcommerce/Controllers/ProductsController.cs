@@ -2,6 +2,7 @@ using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace ApiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -22,6 +24,7 @@ namespace ApiEcommerce.Controllers
         }
 
         [HttpGet]
+         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
 
@@ -33,6 +36,7 @@ namespace ApiEcommerce.Controllers
         }
 
         [HttpGet("{productId:int}", Name = "GetProduct")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -205,7 +209,7 @@ namespace ApiEcommerce.Controllers
             return NoContent();
         }
 
-         [HttpDelete("{productId:int}", Name = "DeleteProduct")]
+        [HttpDelete("{productId:int}", Name = "DeleteProduct")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -223,8 +227,8 @@ namespace ApiEcommerce.Controllers
             {
                 return NotFound($"El producto con el id {productId} no existe");
             }
-            
-             if (!_productRepository.DeleteProduct(product))
+
+            if (!_productRepository.DeleteProduct(product))
             {
                 ModelState.AddModelError("CustomError", $"Algo salió mal al eliminar el registro {product.Name}");
                 return StatusCode(500, ModelState);

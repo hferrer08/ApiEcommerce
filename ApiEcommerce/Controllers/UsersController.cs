@@ -2,6 +2,7 @@ using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace ApiEcommerce.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
 
@@ -51,6 +53,7 @@ namespace ApiEcommerce.Controllers
         }
 
         [HttpPost(Name = "RegisterUser")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -80,7 +83,8 @@ namespace ApiEcommerce.Controllers
             return CreatedAtRoute("GetUser", new { id = result.Id }, result);
         }
 
-        [HttpPost("Login",Name = "LoginUser")]
+        [HttpPost("Login", Name = "LoginUser")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -93,7 +97,7 @@ namespace ApiEcommerce.Controllers
             }
 
             var user = await _userRepository.Login(userLoginDtoDto);
-            if (user  == null)
+            if (user == null)
             {
                 return Unauthorized();
             }

@@ -83,9 +83,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//MiddleWare
 
 app.UseCors(PolicyNames.AllowSpecificOrigin);
+
+app.UseAuthentication();
+
 
 app.UseAuthorization();
 
