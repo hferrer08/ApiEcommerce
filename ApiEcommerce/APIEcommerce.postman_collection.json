@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c7d26c13-1698-4c4d-95fd-b29ff6cd8851",
+		"_postman_id": "04b802b3-189a-4fa6-9943-071291b6d8a7",
 		"name": "APIEcommerce",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29215583"
@@ -228,6 +228,302 @@
 								"api",
 								"Users",
 								"Login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Listado de productos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5010/api/Products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener un producto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5010/api/Products/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"libro Harry Potter\",\r\n  \"description\": \"Libro de magia\",\r\n  \"price\": 500,\r\n  \"imgUrl\": \"\",\r\n  \"sku\": \"LIB-001-123\",\r\n  \"stock\": 50,\r\n  \"updateDate\": \"2025-09-06T14:54:46.702Z\",\r\n  \"categoryId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Libro Harry Potter-1\",\r\n  \"description\": \"Parte 1 de libro\",\r\n  \"updateDate\": \"2025-09-06T14:56:33.752Z\",\r\n  \"categoryId\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Libro Harry Potter-1\",\r\n  \"description\": \"Parte 1 de libro\",\r\n  \"updateDate\": \"2025-09-06T14:56:33.752Z\",\r\n  \"categoryId\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar productos por categoría",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Libro Harry Potter-1\",\r\n  \"description\": \"Parte 1 de libro\",\r\n  \"updateDate\": \"2025-09-06T14:56:33.752Z\",\r\n  \"categoryId\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/searchByCategory/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"searchByCategory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar productos por nombre o descripcion",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Libro Harry Potter-1\",\r\n  \"description\": \"Parte 1 de libro\",\r\n  \"updateDate\": \"2025-09-06T14:56:33.752Z\",\r\n  \"categoryId\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/searchByNameDescription/libro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"searchByNameDescription",
+								"libro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Comprar un producto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImRldmktMjAyOSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1NzE3MDU1OSwiZXhwIjoxNzU3MTc3NzU5LCJpYXQiOjE3NTcxNzA1NTl9.mpeKj7tg8aISt14NiG51AqGVpnfgTVfnaoNLl7MKthA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Libro Harry Potter-1\",\r\n  \"description\": \"Parte 1 de libro\",\r\n  \"updateDate\": \"2025-09-06T14:56:33.752Z\",\r\n  \"categoryId\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5010/api/Products/buyProduct/libro/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5010",
+							"path": [
+								"api",
+								"Products",
+								"buyProduct",
+								"libro",
+								"1"
 							]
 						}
 					},
