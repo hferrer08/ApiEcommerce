@@ -12,11 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var dbConnectionString = builder.Configuration.GetConnectionString("ConexionSql");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString));
-
+//Caché
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024;
+    options.UseCaseSensitivePaths = true;
+});
+//Repository
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 //builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+//AutoMapper
 builder.Services.AddAutoMapper(cfg =>
 {
 
@@ -118,6 +126,8 @@ app.UseHttpsRedirection();
 
 
 app.UseCors(PolicyNames.AllowSpecificOrigin);
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
