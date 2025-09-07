@@ -105,7 +105,7 @@ public class ProductRepository : IProductRepository
         IQueryable<Product> query = _db.Products;
         if (!string.IsNullOrEmpty(searchTerm))
         {
-            query = query.Include(p=>p.CategoryId).Where(p => p.Name.ToLower().Trim().Contains(searchTermLowered) ||
+            query = query.Include(p=>p.Category).Where(p => p.Name.ToLower().Trim().Contains(searchTermLowered) ||
             p.Description.ToLower().Trim().Contains(searchTermLowered)            
             );
         }
