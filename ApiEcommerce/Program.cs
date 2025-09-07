@@ -2,6 +2,7 @@ using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 //Caché
 builder.Services.AddResponseCaching(options =>
 {
-    options.MaximumBodySize = 1024;
+    options.MaximumBodySize = 1024 * 1024;
     options.UseCaseSensitivePaths = true;
 });
 //Repository
@@ -57,8 +58,20 @@ builder.Services.AddAuthentication(options =>
 }
 
 );
+//Perfiles de caché
+builder.Services.AddControllers(options =>
+{
+  options.CacheProfiles.Add("Default10", new CacheProfile()
+  {
+    Duration = 10
+  });
+  options.CacheProfiles.Add("Default20", new CacheProfile()
+  {
+    Duration = 20
+  });
+}
 
-builder.Services.AddControllers();
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //Para utilizar Auth JWT desde Swagger
