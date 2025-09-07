@@ -1,6 +1,7 @@
 using ApiEcommerce.Constants;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
+using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     // [EnableCors("AllowSpecificOrigin")]
@@ -29,6 +32,7 @@ namespace ApiEcommerce.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+        [MapToApiVersion("1.0")]
         // [EnableCors("AllowSpecificOrigin")]
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
         public IActionResult GetCategories()
@@ -41,6 +45,25 @@ namespace ApiEcommerce.Controllers
             }
             return Ok(categoriesDto);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+        [MapToApiVersion("2.0")]
+        // [EnableCors("AllowSpecificOrigin")]
+        // [EnableCors(PolicyNames.AllowSpecificOrigin)]
+        public IActionResult GetCategoriesOrderById()
+        {
+            var categories = _categoryRepository.GetCategories().OrderBy(cat=>cat.Id);
+            var categoriesDto = new List<CategoryDto>();
+            foreach (var category in categories)
+            {
+                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
+            }
+            return Ok(categoriesDto);
+        }
+        
 
         [HttpGet("{id:int}", Name = "GetCategory")]
         //[ResponseCache(Duration = 10)]
