@@ -1,6 +1,7 @@
 using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +102,24 @@ builder.Services.AddSwaggerGen(
     });
   }
 );
+//Versionamiento API
+var apiVersioningBuilder = builder.Services.AddApiVersioning(option =>
+{
+  option.AssumeDefaultVersionWhenUnspecified = true;
+  option.DefaultApiVersion = new ApiVersion(1, 0);
+  option.ReportApiVersions = true;
+  option.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version"));
+}
+);
+//Versionamiento API Swagger
+apiVersioningBuilder.AddApiExplorer(option =>
+{
+  option.GroupNameFormat = "'v'VVV'"; //v2, v2,v3...
+  option.SubstituteApiVersionInUrl = true; //api/v{version}/products
+
+}
+);
+
 //CORS
 builder.Services.AddCors(options =>
 {
