@@ -3,6 +3,7 @@ using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -35,6 +36,13 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddMaps(typeof(Program).Assembly);
 
 });
+
+//.NET Identity
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
 var secretKey = builder.Configuration.GetValue<String>("ApiSettings:SecretKey");
 if (string.IsNullOrEmpty(secretKey)) {
     throw new InvalidOperationException("SecretKey no esta configurada");
