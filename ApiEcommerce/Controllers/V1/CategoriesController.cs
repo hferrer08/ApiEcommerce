@@ -31,6 +31,7 @@ namespace ApiEcommerce.Controllers.V1
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+        [Obsolete("Este método está obsoleto. User GetCategoriesById de la versión 2 en su lugar")]
         // [MapToApiVersion("1.0")]
         // [EnableCors("AllowSpecificOrigin")]
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
