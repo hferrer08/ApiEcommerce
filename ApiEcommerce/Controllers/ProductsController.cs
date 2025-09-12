@@ -208,7 +208,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
 
-        public IActionResult UpdateProduct(int productId, [FromBody] UpdateProductDto updateProductDTO)
+        public IActionResult UpdateProduct(int productId, [FromForm] UpdateProductDto updateProductDTO)
         {
             if (updateProductDTO == null)
             {
@@ -229,6 +229,31 @@ namespace ApiEcommerce.Controllers
             }
             var product = _mapper.Map<Product>(updateProductDTO);
             product.ProductId = productId;
+            //Agregando imagen
+            if (updateProductDTO.Image != null)
+            {
+                string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(updateProductDTO.Image.FileName);
+                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
+                if (!Directory.Exists(imagesFolder))
+                {
+                    Directory.CreateDirectory(imagesFolder);
+                }
+                var filePath = Path.Combine(imagesFolder, fileName);
+                FileInfo file = new FileInfo(filePath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                updateProductDTO.Image.CopyTo(fileStream);
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+                product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
+                product.ImgUrlLocal = filePath;
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/300x300";
+            }
             if (!_productRepository.UpdateProduct(product))
             {
                 ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {product.Name}");
