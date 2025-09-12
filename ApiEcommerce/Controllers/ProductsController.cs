@@ -88,30 +88,7 @@ namespace ApiEcommerce.Controllers
             }
             var product = _mapper.Map<Product>(createProductDTO);
             //Agregando imagen
-            if (createProductDTO.Image != null)
-            {
-                string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(createProductDTO.Image.FileName);
-                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
-                if (!Directory.Exists(imagesFolder))
-                {
-                    Directory.CreateDirectory(imagesFolder);
-                }
-                var filePath = Path.Combine(imagesFolder, fileName);
-                FileInfo file = new FileInfo(filePath);
-                if (file.Exists)
-                {
-                    file.Delete();
-                }
-                using var fileStream = new FileStream(filePath, FileMode.Create);
-                createProductDTO.Image.CopyTo(fileStream);
-                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
-                product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
-                product.ImgUrlLocal = filePath;
-            }
-            else
-            {
-                product.ImgUrl = "https://placehold.co/300x300";
-            }
+            UploadProductImage(createProductDTO, product);
             if (!_productRepository.CreateProduct(product))
             {
                 ModelState.AddModelError("CustomError", $"Algo salió mal al guardar el registro {product.Name}");
@@ -229,10 +206,22 @@ namespace ApiEcommerce.Controllers
             }
             var product = _mapper.Map<Product>(updateProductDTO);
             product.ProductId = productId;
-            //Agregando imagen
-            if (updateProductDTO.Image != null)
+            UploadProductImage(updateProductDTO, product);
+            if (!_productRepository.UpdateProduct(product))
             {
-                string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(updateProductDTO.Image.FileName);
+                ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {product.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        private void UploadProductImage(dynamic productDto, Product product)
+        {
+            //Agregando imagen
+            if (productDto.Image != null)
+            {
+                string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(productDto.Image.FileName);
                 var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
                 if (!Directory.Exists(imagesFolder))
                 {
@@ -245,7 +234,7 @@ namespace ApiEcommerce.Controllers
                     file.Delete();
                 }
                 using var fileStream = new FileStream(filePath, FileMode.Create);
-                updateProductDTO.Image.CopyTo(fileStream);
+                productDto.Image.CopyTo(fileStream);
                 var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
                 product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
                 product.ImgUrlLocal = filePath;
@@ -254,13 +243,6 @@ namespace ApiEcommerce.Controllers
             {
                 product.ImgUrl = "https://placehold.co/300x300";
             }
-            if (!_productRepository.UpdateProduct(product))
-            {
-                ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {product.Name}");
-                return StatusCode(500, ModelState);
-            }
-
-            return NoContent();
         }
 
         [HttpDelete("{productId:int}", Name = "DeleteProduct")]
