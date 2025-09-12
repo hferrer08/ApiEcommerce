@@ -67,7 +67,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
 
-        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDTO)
+        public IActionResult CreateProduct([FromForm] CreateProductDto createProductDTO)
         {
             if (createProductDTO == null)
             {
