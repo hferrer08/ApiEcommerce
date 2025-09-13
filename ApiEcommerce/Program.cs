@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Mapster;
+using ApiEcommerce.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,17 +39,27 @@ builder.Services.AddResponseCaching(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddMapster();
 //builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //AutoMapper
-builder.Services.AddAutoMapper(cfg =>
+/* builder.Services.AddAutoMapper(cfg =>
 {
 
     // cfg.AddProfile<CategoryProfile>();
 
     cfg.AddMaps(typeof(Program).Assembly);
 
-});
+}); */
+
+//Mapster
+// Configuración global de Mapster
+var config = TypeAdapterConfig.GlobalSettings;
+
+//Registrar todos los profiles que creaste
+CategoryMapping.RegisterMappings(config);
+ProductMapping.RegisterMappings(config);
+UserMapping.RegisterMappings(config);
 
 //.NET Identity
 

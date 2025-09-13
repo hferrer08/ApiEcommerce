@@ -1,18 +1,18 @@
-using System;
+
 using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
-using AutoMapper;
+using Mapster;
 
 namespace ApiEcommerce.Mapping;
 
-public class ProductProfile: Profile
+public static class ProductMapping
 {
-    public ProductProfile()
+    public static void RegisterMappings(TypeAdapterConfig config)
     {
-        CreateMap<Product, ProductDTO>()
-        .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-        .ReverseMap();
-        CreateMap<Product, CreateProductDto>().ReverseMap(); 
-        CreateMap<Product, UpdateProductDto>().ReverseMap(); 
-}
+        config.NewConfig<Product, ProductDTO>()
+            .Map(dest => dest.CategoryName, src => src.Category.Name)
+            .TwoWays();
+        config.NewConfig<Product, CreateProductDto>().TwoWays();
+        config.NewConfig<Product, UpdateProductDto>().TwoWays();
+    }
 }

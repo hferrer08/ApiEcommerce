@@ -3,7 +3,7 @@ using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Models.Dtos.Responses;
 using ApiEcommerce.Repository;
 using Asp.Versioning;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +20,10 @@ namespace ApiEcommerce.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
-        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -36,7 +34,7 @@ namespace ApiEcommerce.Controllers
         public IActionResult GetProducts()
         {
             var products = _productRepository.GetProducts();
-            var productsDto = _mapper.Map<List<ProductDTO>>(products);
+            var productsDto = products.Adapt<List<ProductDTO>>();
             return Ok(productsDto);
         }
 
@@ -55,7 +53,7 @@ namespace ApiEcommerce.Controllers
             {
                 return NotFound($"El producto con el id {productId} no existe");
             }
-            var productDto = _mapper.Map<ProductDTO>(product);
+            var productDto = product.Adapt<ProductDTO>();
 
             return Ok(productDto);
         }
@@ -81,7 +79,7 @@ namespace ApiEcommerce.Controllers
                 return NotFound("No hay más páginas disponibles");
             }
             var products = _productRepository.GetProductsInPages(pageNumber, pageSize);
-            var productsDto = _mapper.Map<List<ProductDTO>>(products);
+            var productsDto = products.Adapt<List<ProductDTO>>();
             var paginationResponse = new PaginationResponse<ProductDTO>
             {
                 PageNumber = pageNumber,
@@ -119,7 +117,7 @@ namespace ApiEcommerce.Controllers
                 return BadRequest(ModelState);
 
             }
-            var product = _mapper.Map<Product>(createProductDTO);
+            var product = createProductDTO.Adapt<Product>();
             //Agregando imagen
             UploadProductImage(createProductDTO, product);
             if (!_productRepository.CreateProduct(product))
@@ -128,7 +126,7 @@ namespace ApiEcommerce.Controllers
                 return StatusCode(500, ModelState);
             }
             var createdProduct = _productRepository.GetProduct(product.ProductId);
-            var productDto = _mapper.Map<ProductDTO>(createdProduct);
+            var productDto = createdProduct.Adapt<ProductDTO>();
             return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
         }
 
@@ -154,7 +152,7 @@ namespace ApiEcommerce.Controllers
                 return NotFound($"Los productos con el id de categoría {categoryId} no existen");
             }
 
-            var productsDto = _mapper.Map<List<ProductDTO>>(products);
+            var productsDto = products.Adapt<List<ProductDTO>>();
 
             return Ok(productsDto);
         }
@@ -176,7 +174,7 @@ namespace ApiEcommerce.Controllers
                 return NotFound($"Los productos con el nombre o descripción '{searchTerm}' no existen");
             }
 
-            var productsDto = _mapper.Map<List<ProductDTO>>(products);
+            var productsDto = products.Adapt<List<ProductDTO>>();
 
             return Ok(productsDto);
         }
@@ -237,7 +235,7 @@ namespace ApiEcommerce.Controllers
                 return BadRequest(ModelState);
 
             }
-            var product = _mapper.Map<Product>(updateProductDTO);
+            var product = updateProductDTO.Adapt<Product>();
             product.ProductId = productId;
             UploadProductImage(updateProductDTO, product);
             if (!_productRepository.UpdateProduct(product))
