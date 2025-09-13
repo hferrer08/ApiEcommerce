@@ -1,4 +1,4 @@
-# 🛒 ApiEcommerce (.NET 8)
+# 🛒 ApiEcommerce (.NET)
 
 Proyecto didáctico desarrollado siguiendo el curso **Devtalles**.  
 El objetivo no es solo crear una API funcional, sino también **aprender paso a paso buenas prácticas modernas en ASP.NET Core** y dejar esta API como **plantilla base** para futuros proyectos.
